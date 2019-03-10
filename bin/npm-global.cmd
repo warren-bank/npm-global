@@ -28,7 +28,7 @@ if exist "%module_path%" (
 mkdir "%module_path%"
 pushd "%module_path%"
 
-call npm init --yes >NUL 2>&1
+call npm init --yes --scope="npm-global" >NUL 2>&1
 call npm install --only=production --save "%module_uuid%" >"%module_path%\.npm-install.log" 2>&1
 
 rem :: ===========================================
