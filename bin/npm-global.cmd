@@ -8,7 +8,9 @@ if not defined base_path (
 )
 
 set module_uuid=%~1
-set module_name=%module_uuid:*/=%
+set module_name=%module_uuid%
+set module_name=%module_name:@=%
+set module_name=%module_name:/=-%
 
 set module_path=!base_path!\%module_name%
 
