@@ -42,12 +42,24 @@ if not exist "%global_bin_path%" mkdir "%global_bin_path%"
 set local_bin_path=%module_path%\node_modules\.bin
 
 for /F "usebackq tokens=* delims=" %%F IN (`dir /B "%local_bin_path%\*.cmd"`) do (
+  rem :: ================
+  rem :: Windows
   set cmd_name=%%F
   set global_cmd=%global_bin_path%\!cmd_name!
-  set local_cmd=%local_bin_path%\!cmd_name!
+  set relative_local_cmd=..\%module_name%\node_modules\.bin\!cmd_name!
 
   echo @echo off>"!global_cmd!"
-  echo call "!local_cmd!" %%*>>"!global_cmd!"
+  echo call "%%~dp0!relative_local_cmd!" %%*>>"!global_cmd!"
+
+  rem :: ================
+  rem :: Bash
+  set cmd_name=!cmd_name:~0,-4!
+  set global_cmd=%global_bin_path%\!cmd_name!
+  set relative_local_cmd=../%module_name%/node_modules/.bin/!cmd_name!
+
+  if exist "%local_bin_path%\!cmd_name!" echo #^^!/usr/bin/env bash>"!global_cmd!"
+  if exist "%local_bin_path%\!cmd_name!" echo DIR="$( cd "$^( dirname "${BASH_SOURCE[0]}" ^)" && pwd )">>"!global_cmd!"
+  if exist "%local_bin_path%\!cmd_name!" echo "${DIR}/!relative_local_cmd!" "$@">>"!global_cmd!"
 )
 
 :done
